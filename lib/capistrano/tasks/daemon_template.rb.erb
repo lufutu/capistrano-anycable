@@ -1,7 +1,8 @@
 require 'anycable'
+require 'anycable/cli'
 require 'daemons'
 
 Daemons.run_proc('anycable', { dir: '<%= File.dirname(fetch(:anycable_pid)) %>' }) do
   options = {}
-  PumaDoctor.start(options)
+  AnyCable::CLI.new(options).run
 end
