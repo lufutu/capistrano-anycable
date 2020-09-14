@@ -27,7 +27,7 @@ namespace :anycable do
         execute :bundle, :exec, :ruby, fetch(:anycable_daemon_file), 'run'
       end
     end
-  end  
+  end
 
   desc 'Status daemon'
   task :status do
@@ -37,7 +37,7 @@ namespace :anycable do
         execute :bundle, :exec, :ruby, fetch(:anycable_daemon_file), 'status'
       end
     end
-  end    
+  end
 
   desc 'Start daemon'
   task :start do
