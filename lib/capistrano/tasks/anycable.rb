@@ -2,7 +2,7 @@ namespace :load do
   task :defaults do
     set :anycable_pid, -> { File.join(shared_path, 'tmp', 'pids', 'anycable.pid') }
     set :anycable_daemon_file, -> { File.join(shared_path, 'anycable_daemon.rb') }
-    set :anycable_log_file, -> { File.join(shared_path, 'log', 'anycable.log') }
+    set :anycable_log_file, -> { File.join(release_path, 'log', 'anycable.log') }
   end
 end
 
@@ -18,6 +18,26 @@ namespace :anycable do
       end
     end
   end
+
+  desc 'Run daemon'
+  task :run do
+    on roles(:app), in: :sequence, wait: 5 do
+      within release_path do
+        invoke 'anycable:check'
+        execute :bundle, :exec, :ruby, fetch(:anycable_daemon_file), 'run'
+      end
+    end
+  end  
+
+  desc 'Status daemon'
+  task :status do
+    on roles(:app), in: :sequence, wait: 5 do
+      within release_path do
+        invoke 'anycable:check'
+        execute :bundle, :exec, :ruby, fetch(:anycable_daemon_file), 'status'
+      end
+    end
+  end    
 
   desc 'Start daemon'
   task :start do

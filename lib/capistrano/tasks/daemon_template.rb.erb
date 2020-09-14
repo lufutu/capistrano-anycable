@@ -1,8 +1,29 @@
-require 'anycable'
-require 'anycable/cli'
-require 'daemons'
+#!/usr/bin/env ruby
 
-Daemons.run_proc('anycable', { dir: '<%= File.dirname(fetch(:anycable_pid)) %>' }) do
-  options = {}
-  AnyCable::CLI.new(options).run
+require "anycable/cli"
+
+begin
+  require "daemons"
+rescue LoadError
+  raise <<~MSG
+    You need to add gem 'daemons' to your Gemfile if you want to use `anycabled`:
+      # Gemfile
+      gem "daemons", "~> 1.3", require: false
+  MSG
+end
+
+options = {
+  dir: "<%= File.dirname(fetch(:anycable_pid)) %>",
+  log_output: "<%= File.dirname(fetch(:anycable_log)) %>"
+}
+
+# Preserve current directory. We need it inside the server.
+current_dir = Dir.pwd
+
+# Clean ARGV from daemon command and args
+_, _, args = Daemons::Controller.split_argv(ARGV)
+
+Daemons.run_proc("anycable", options) do
+  Dir.chdir current_dir
+  AnyCable::CLI.new.run(args)
 end
