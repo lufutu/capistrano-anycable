@@ -14,7 +14,7 @@ end
 
 options = {
   dir: '<%= File.dirname(fetch(:anycable_pid)) %>',
-  log_output: '<%= File.dirname(fetch(:anycable_log_file)) %>'
+  log_output: '<%= fetch(:anycable_log_file) %>'
 }
 
 # Preserve current directory. We need it inside the server.
